@@ -1,10 +1,12 @@
 import React from "react";
-import './style.scss';
+import "./style.scss";
 
-const NavBar : React.FC = ({ children })  => {
+const NavBar: React.FC = ({ children }) => {
     return (
         <div className="nav">
-            {children}
+            <div className="nav-content">
+                <h1>Hello</h1>
+            </div>
         </div>
     );
 };

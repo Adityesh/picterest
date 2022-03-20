@@ -1,3 +1,13 @@
 .nav {
-    background-color: red;
+    background-color: #252525;
+    color: white;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.nav-content {
+    width: 50%;
 }
