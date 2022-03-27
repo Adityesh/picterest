@@ -737,6 +737,13 @@
   dependencies:
     "mongodb" "*"
 
+"@types/mongoose-aggregate-paginate-v2@^1.0.3":
+  "integrity" "sha512-FlkviSitICzBzj7sD4wLj3FK6AeOJACknCRheyBvs+yTTAx82U5XNes256bYivpF0q9cMUgr8oSuzWMVn/IlWA=="
+  "resolved" "https://registry.npmjs.org/@types/mongoose-aggregate-paginate-v2/-/mongoose-aggregate-paginate-v2-1.0.3.tgz"
+  "version" "1.0.3"
+  dependencies:
+    "@types/mongoose" "5.10.5"
+
 "@types/mongoose-unique-validator@^1.0.5":
   "integrity" "sha512-i7U0L+xrTSwaDfi18cEpC1N549yZVKTKQMzBRJpXvdPMR0BgDO6sjZ/nOoOa3ekhJTNo37DSzrPCbHeY+pd7ng=="
   "resolved" "https://registry.npmjs.org/@types/mongoose-unique-validator/-/mongoose-unique-validator-1.0.5.tgz"
@@ -4099,6 +4106,16 @@
     "socks" "^2.6.1"
   optionalDependencies:
     "saslprep" "^1.0.3"
+
+"mongoose-aggregate-paginate-v2@^1.0.6":
+  "integrity" "sha512-UuALu+mjhQa1K9lMQvjLL3vm3iALvNw8PQNIh2gp1b+tO5hUa0NC0Wf6/8QrT9PSJVTihXaD8hQVy3J4e0jO0Q=="
+  "resolved" "https://registry.npmjs.org/mongoose-aggregate-paginate-v2/-/mongoose-aggregate-paginate-v2-1.0.6.tgz"
+  "version" "1.0.6"
+
+"mongoose-paginate-v2@^1.6.3":
+  "integrity" "sha512-wxIOcZL7V3+yHIkdTcDk+MtPxjDacEmrZ/4NpwgvOmmEm9SWWsBKRyPd/EmHlRUzk3ylr7fy4QEje1VMg0qpZA=="
+  "resolved" "https://registry.npmjs.org/mongoose-paginate-v2/-/mongoose-paginate-v2-1.6.3.tgz"
+  "version" "1.6.3"
 
 "mongoose-unique-validator@^3.0.0":
   "integrity" "sha512-WwC09CN2OQ39ONCEN2quR2L5CLHau3p2VYegRMitoVwdKA738uuJRlrTHXt5J6WyJBSloCILxwDZ5qbu4yEXcA=="

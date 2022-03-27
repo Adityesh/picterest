@@ -21,3 +21,15 @@
 
     
 }
+
+.redirect { 
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    color: teal;
+
+    &:hover {
+        text-decoration: underline;
+        text-decoration-color: teal;
+    }
+}

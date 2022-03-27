@@ -14,6 +14,7 @@ index.post("/auth/login", authController.login);
 index.post("/pin/add", verifyToken, pinController.addPin);
 index.delete("/pin/delete", verifyToken, pinController.deletePin);
 index.post("/pin/like", verifyToken, pinController.likePin);
+index.get("/pin/get", pinController.GetPins);
 
 // Account routes
 index.delete("/account/delete", verifyToken, accountController.deleteAccount);

@@ -165,6 +165,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       status : 200,
       data : {
           token,
+          user : {
+              userName : userInDB.userName,
+              likes : userInDB.likes,
+              email : userInDB.email,
+              _id : userInDB._id,
+          },
       },
     };
 

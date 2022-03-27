@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserModel from "../models/UserModel";
-import Pin from "../models/Pin";
+import PinModel, { Pin } from "../models/Pin";
+import { User } from "../models/UserModel";
 import { ResponseModel } from "./auth";
 import mongoose from "mongoose";
 
@@ -8,6 +9,7 @@ interface PinRequest {
     image: string;
     description: string;
     owner: string;
+    tags: Array<string>;
 }
 /**
  * POST /add
@@ -25,9 +27,9 @@ export const addPin = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const { image, description, owner } = req.body as PinRequest;
+    const { image, description, owner, tags } = req.body as PinRequest;
 
-    if (image == null || description == null || owner == null) {
+    if (image == null || description == null || owner == null || tags == null) {
         const response: ResponseModel = {
             error: true,
             status: 400,
@@ -38,13 +40,14 @@ export const addPin = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const newPin = new Pin({
+    const newPin = new PinModel({
         owner,
         image,
         description,
+        tags,
     });
 
-    newPin.save((err, pin) => {
+    newPin.save(async (err, pin) => {
         if (err) {
             const response: ResponseModel = {
                 error: true,
@@ -63,7 +66,13 @@ export const addPin = async (req: Request, res: Response): Promise<void> => {
             data: pin,
         };
 
-        res.status(200).json(response);
+        const userDb = await UserModel.findById(owner).exec();
+
+        userDb.pins.push(pin);
+
+        userDb.save((err, doc) => {
+            res.status(200).json(response);
+        });
     });
 };
 
@@ -100,7 +109,7 @@ export const deletePin = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const dbPin = await Pin.findOne({ _id, owner });
+    const dbPin = await PinModel.findOne({ _id, owner });
 
     if (dbPin == null) {
         const response: ResponseModel = {
@@ -138,8 +147,8 @@ export const deletePin = async (req: Request, res: Response): Promise<void> => {
 };
 
 interface LikeRequest {
-    pinId: string;
-    userId: string;
+    pinId: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
 }
 
 /**
@@ -171,7 +180,7 @@ export const likePin = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const dbPin = await Pin.findById({ _id: pinId }).exec();
+    const dbPin = await PinModel.findById({ _id: pinId }).exec();
     const dbUser = await UserModel.findById({ _id: userId }).exec();
 
     if (dbPin == null || dbUser == null) {
@@ -185,7 +194,7 @@ export const likePin = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    dbPin.likes.push({ ...dbUser, password: null });
+    dbPin.likes.push(dbUser);
     dbUser.likes.push(dbPin);
 
     dbPin.save((err, _) => {
@@ -226,4 +235,70 @@ export const likePin = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json(response);
     return;
+};
+
+interface GetPinsRequest {
+    page?: number;
+    limit: number;
+}
+
+interface GetPinsResult {
+    page: number;
+    totalPages: number;
+    totalCount: number;
+    documents: any;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
+
+/**
+ * /GET Get all pins paginated
+ *
+ */
+export const GetPins = async (
+    { body }: Request,
+    res: Response,
+): Promise<void> => {
+    const { page = 1, limit = 0 } = body as GetPinsRequest;
+
+    const getQuery = PinModel.find({});
+
+    const countDocuments = await getQuery.countDocuments();
+    const totalPages = Math.floor(countDocuments / limit);
+    PinModel.find({})
+        .skip(limit * page)
+        .populate<{ child: User }>("owner likes", "-password")
+        .limit(limit)
+        .exec((err, documents) => {
+            if (err) {
+                const response: ResponseModel = {
+                    error: true,
+                    message: `Could not fetch pins, ${err.message}`,
+                    data: {},
+                    status: 500,
+                };
+
+                res.status(500).json(response);
+                return;
+            }
+
+            const paginatedResponse: GetPinsResult = {
+                page,
+                totalCount: countDocuments,
+                totalPages,
+                documents,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
+            };
+
+            const response: ResponseModel = {
+                error: false,
+                message: "Success",
+                data: paginatedResponse,
+                status: 200,
+            };
+
+            res.status(200).json(response);
+            return;
+        });
 };

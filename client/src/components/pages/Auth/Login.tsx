@@ -5,22 +5,72 @@ import {
     Divider,
     Button,
     Heading,
+    useToast,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useLazyLoginQuery } from "../../../redux/services/auth";
 import { updateLogin } from "../../../redux/slices/authSlice";
 import "./style.scss";
 
 const Login: React.FC = props => {
+    const toast = useToast();
+    const navigate = useNavigate();
     const { input, password } = useAppSelector(state => state.auth.login);
+    const [trigger, { isError, isFetching, data, isSuccess, error }, lastPromiseInfo] =
+        useLazyLoginQuery();
     const dispatch = useAppDispatch();
-
     const handleInputChange = (key: string, value: string) => {
         const obj = {
-            [key] : value,
+            [key]: value,
         };
 
         dispatch(updateLogin(obj));
     };
+
+    console.log(data);
+
+    const handleLogin = () => {
+        const identifyEmailRegex = /.*@.+\..+/g;
+        const obj = {};
+        if (identifyEmailRegex.test(input)) {
+            // email
+            trigger({
+                email: input,
+                password,
+            });
+        } else {
+            // username
+            trigger({
+                userName: input,
+                password,
+            });
+        }
+    };
+
+    useEffect(() => {
+        if(!isFetching && isError) {
+            toast({
+                title: 'Error!',
+                description: error?.data?.message ?? "Failed to login",
+                status: 'error',
+                duration: 2000,
+              });
+        }
+
+        if(!isFetching && isSuccess) {
+            toast({
+                title : 'Login successful',
+                status : 'success',
+                duration : 2000,
+                onCloseComplete : () => {
+                    // Redirect to dashboard page
+                    navigate('../../');
+                },
+            });
+        }
+    }, [isError, isSuccess, isFetching]);
 
     return (
         <div className="auth-container">
@@ -58,6 +108,7 @@ const Login: React.FC = props => {
                         variant={"outline"}
                         colorScheme={"teal"}
                         mr={"0.5rem"}
+                        onClick={() => navigate(-1)}
                     >
                         Back
                     </Button>
@@ -65,10 +116,14 @@ const Login: React.FC = props => {
                         variant={"solid"}
                         colorScheme={"teal"}
                         ml={"0.5rem"}
+                        isLoading={isFetching}
+                        loadingText="Logging in..."
+                        onClick={handleLogin}
                     >
                         Login
                     </Button>
                 </div>
+                <Link className="redirect" to="/auth/register">Sign up</Link>
             </div>
         </div>
     );

@@ -12,7 +12,7 @@ const token = localStorage.getItem("token");
 const authHeader = `Bearer ${token}`;
 
 export const AccountApi = createApi({
-    reducerPath: "authApi",
+    reducerPath: "accountApi",
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
     endpoints: builder => ({
         delete: builder.query({
@@ -27,7 +27,7 @@ export const AccountApi = createApi({
         }),
         get: builder.query({
             query: ({ _id }: Request) => ({
-                url: `get?=${  _id}`,
+                url: `get?_id=${  _id}`,
                 method: "GET",
                 headers: {
                     Authorization: authHeader,
@@ -38,4 +38,4 @@ export const AccountApi = createApi({
     }),
 });
 
-export const { useLazyGetQuery, useLazyDeleteQuery } = AccountApi;
+export const { useLazyGetQuery, useLazyDeleteQuery, useGetQuery : useGetAccountDetails } = AccountApi;

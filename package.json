@@ -31,6 +31,8 @@
         "http-errors": "^1.7.1",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.7",
+        "mongoose-aggregate-paginate-v2": "^1.0.6",
+        "mongoose-paginate-v2": "^1.6.3",
         "mongoose-unique-validator": "^3.0.0",
         "morgan": "^1.9.1",
         "pug": "^3.0.1"
@@ -43,6 +45,7 @@
         "@types/jest": "26.0.24",
         "@types/jsonwebtoken": "^8.5.8",
         "@types/mongoose": "^5.11.97",
+        "@types/mongoose-aggregate-paginate-v2": "^1.0.3",
         "@types/mongoose-unique-validator": "^1.0.5",
         "@types/morgan": "1.9.3",
         "@types/node": "14.18.12",

@@ -1,4 +1,5 @@
 import mongoose, { model, Schema } from "mongoose";
+import paginate from 'mongoose-paginate-v2';
 import { User } from "./UserModel";
 
 export interface Pin {
@@ -7,6 +8,7 @@ export interface Pin {
     owner: User;
     likes: Array<User>,
     isDeleted : boolean,
+    tags : Array<string>
 }
 
 const PinSchema = new Schema<Pin>({
@@ -25,6 +27,10 @@ const PinSchema = new Schema<Pin>({
         ref: "User",
     },
 
+    tags : [{
+        type : String,
+    }],
+
     likes: [
         {
             type: mongoose.Types.ObjectId,
@@ -37,5 +43,9 @@ const PinSchema = new Schema<Pin>({
         default : false,
     },
 });
+
+
+
+PinSchema.plugin(paginate);
 
 export default model<Pin>("Pin", PinSchema);
